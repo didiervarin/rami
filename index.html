@@ -168,14 +168,14 @@
       <div class="avatar flo">F</div>
       <div class="player-name">Flo</div>
       <div class="player-total" id="totalFlo">0</div>
-      <div class="score-label">Points manche</div>
+      <div class="score-label">Points total</div>
       <input class="score-input" type="number" id="scoreFlo" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
     </div>
     <div class="player-card" id="cardPouille">
       <div class="avatar pouille">P</div>
       <div class="player-name">Pouille</div>
       <div class="player-total" id="totalPouille">0</div>
-      <div class="score-label">Points manche</div>
+      <div class="score-label">Points total</div>
       <input class="score-input" type="number" id="scorePouille" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
     </div>
   </div>
@@ -394,8 +394,8 @@ function render() {
   document.getElementById('scoreFlo').disabled = done;
   document.getElementById('scorePouille').disabled = done;
 
-  // Totaux manche
-  const tot = cumulManche();
+  // Totaux cumulés (toutes manches)
+  const tot = cumulTotal();
   document.getElementById('totalFlo').textContent = tot.f;
   document.getElementById('totalPouille').textContent = tot.p;
   applyWinState(tot.f, tot.p, done);
@@ -449,7 +449,7 @@ function updatePreview() {
   const pi = partieIdx();
   const fv = parseInt(document.getElementById('scoreFlo').value);
   const pv = parseInt(document.getElementById('scorePouille').value);
-  const base = cumulManche();
+  const base = cumulTotal();
   const m = manches[mancheIdx];
   const newF = base.f - (m.parties[pi].flo || 0) + (isNaN(fv) ? 0 : fv);
   const newP = base.p - (m.parties[pi].pouille || 0) + (isNaN(pv) ? 0 : pv);
