@@ -61,14 +61,14 @@
   .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
   .header .sub { font-size: 14px; color: var(--text2); margin-top: 2px; }
 
-  /* Manche/Partie badge */
+  /* Partie badge */
   .partie-row { text-align: center; margin-bottom: 10px; }
-  .partie-badge { display: inline-block; background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 6px 20px; font-size: 13px; color: var(--text2); letter-spacing: 0.2px; }
+  .partie-badge { display: inline-block; background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 6px 20px; font-size: 13px; color: var(--text2); }
   .partie-badge .code { font-size: 22px; font-weight: 700; color: var(--text); margin: 0 2px; letter-spacing: 1px; font-variant-numeric: tabular-nums; }
 
   /* Dots */
   .dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); transition: background 0.2s; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); }
   .dot.done { background: var(--text); }
   .dot.current { background: var(--text2); outline: 2px solid var(--text); outline-offset: 1px; }
 
@@ -78,7 +78,6 @@
   /* Banner */
   .banner { border-radius: var(--radius); padding: 12px 16px; text-align: center; font-size: 15px; font-weight: 600; margin-bottom: 14px; min-height: 46px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--surface); color: var(--text2); transition: background 0.3s, color 0.3s; }
   .banner.winning { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
-  .banner.manche-done { background: var(--surface2); border-color: var(--border2); color: var(--text); font-size: 14px; }
 
   /* Players */
   .players { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
@@ -102,23 +101,15 @@
   .btn:active { transform: scale(0.97); opacity: 0.8; }
   .btn:disabled { opacity: 0.35; pointer-events: none; }
   .btn.primary { background: var(--accent); color: var(--bg); border-color: transparent; }
-  .btn.success { background: var(--green); color: #fff; border-color: transparent; grid-column: 1 / -1; font-size: 16px; }
   .btn.danger { border-color: var(--red-border); color: var(--red); font-size: 13px; grid-column: 1 / -1; }
 
-  /* History */
-  .history { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
-  .history-header { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
-  .export-btn { font-size: 12px; color: var(--text2); cursor: pointer; padding: 3px 10px; border: 1px solid var(--border); border-radius: 20px; background: none; font-family: inherit; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  thead th { padding: 9px 14px; text-align: center; font-weight: 500; color: var(--text3); font-size: 12px; border-bottom: 1px solid var(--border); }
-  thead th:first-child { text-align: left; }
-  tbody td { padding: 9px 14px; text-align: center; color: var(--text); border-bottom: 1px solid var(--border); }
-  tbody td:first-child { text-align: left; color: var(--text2); font-size: 12px; }
-  tbody tr:last-child td { border-bottom: none; }
-  .row-manche-total td { font-weight: 700; font-size: 14px; background: var(--surface2); color: var(--text) !important; border-bottom: 2px solid var(--border2) !important; }
-  .row-grand-total td { font-weight: 700; font-size: 15px; background: var(--accent); color: var(--bg) !important; }
-  .row-manche-sep td { padding: 4px 14px; font-size: 11px; color: var(--text3); background: var(--surface2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
-  .empty-row td { text-align: center; color: var(--text3); padding: 20px; font-size: 13px; }
+  /* Total card */
+  .total-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
+  .total-card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; text-align: center; }
+  .total-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text2); padding: 3px 0; }
+  .total-row .val { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+  .total-row.highlight .val { color: var(--green); }
+  .export-btn { width: 100%; margin-top: 12px; border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; background: none; color: var(--text2); cursor: pointer; font-family: inherit; }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -155,9 +146,7 @@
   </div>
 
   <div class="partie-row">
-    <div class="partie-badge">
-      Partie <span class="code" id="partieCode">001-5</span>
-    </div>
+    <div class="partie-badge">Partie <span class="code" id="partieCode">001-5</span></div>
   </div>
   <div class="dots" id="dots"></div>
   <div class="dealer-bar" id="dealerBar">🃏 À … de distribuer</div>
@@ -168,50 +157,53 @@
       <div class="avatar flo">F</div>
       <div class="player-name">Flo</div>
       <div class="player-total" id="totalFlo">0</div>
-      <div class="score-label">Points total</div>
+      <div class="score-label">Total</div>
       <input class="score-input" type="number" id="scoreFlo" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
     </div>
     <div class="player-card" id="cardPouille">
       <div class="avatar pouille">P</div>
       <div class="player-name">Pouille</div>
       <div class="player-total" id="totalPouille">0</div>
-      <div class="score-label">Points total</div>
+      <div class="score-label">Total</div>
       <input class="score-input" type="number" id="scorePouille" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
     </div>
   </div>
 
-  <div class="actions" id="actionsNormal">
-    <button class="btn" id="btnPrev" onclick="goPartie(1)">← Précédente</button>
+  <div class="actions">
+    <button class="btn" id="btnPrev" onclick="goBack()">← Corriger</button>
     <button class="btn primary" onclick="validerPartie()">Valider ✓</button>
-    <button class="btn danger" onclick="resetManche()">Réinitialiser la manche</button>
+    <button class="btn danger" onclick="resetAll()">Tout réinitialiser</button>
   </div>
 
-  <div class="actions hidden" id="actionsNewManche">
-    <button class="btn success" onclick="nouvelleManche()">🃏 Nouvelle manche →</button>
-    <button class="btn danger" onclick="resetManche()">Corriger la manche</button>
-  </div>
-
-  <div class="history">
-    <div class="history-header">
-      <span>Historique complet</span>
-      <button class="export-btn" onclick="exportTxt()">Exporter .txt</button>
-    </div>
-    <table>
-      <thead><tr><th>Partie</th><th>Flo</th><th>Pouille</th></tr></thead>
-      <tbody id="historyBody"></tbody>
-    </table>
+  <div class="total-card">
+    <div class="total-card-title">Résumé</div>
+    <div class="total-row"><span>Parties jouées</span><span class="val" id="nbParties">0</span></div>
+    <div class="total-row"><span>Manches jouées</span><span class="val" id="nbManches">0</span></div>
+    <div class="total-row"><span>Total Flo</span><span class="val" id="resumeFlo">0</span></div>
+    <div class="total-row"><span>Total Pouille</span><span class="val" id="resumePouille">0</span></div>
+    <div class="total-row" id="resumeWinRow"><span>Avance</span><span class="val" id="resumeWin">—</span></div>
+    <button class="export-btn" onclick="exportTxt()">Exporter .txt</button>
   </div>
 </div>
 
 <script>
-const N = 5; // parties par manche
+// ── État — structure minimale ────────────────────────────────
+// mancheNum  : numéro de la manche en cours (1..999)
+// partieNum  : numéro de la partie en cours dans la manche (5..1)
+// totalFlo   : cumul total Flo (toutes parties validées)
+// totalPouille: cumul total Pouille
+// partiesJouees : nombre total de parties validées
+// lastPartie : {flo, pouille} — la dernière partie validée (pour "Corriger")
 
-// ── État global ──────────────────────────────────────────────
-// manches : tableau de manches
-// chaque manche = { num: 1, parties: [ {flo, pouille, dealer} x5 ], current: 5, done: false }
-// current = numéro de partie en cours (5→1), done = manche terminée
-let manches = [];
-let mancheIdx = 0; // index dans manches[] de la manche en cours
+let state = {
+  mancheNum: 1,
+  partieNum: 5,
+  totalFlo: 0,
+  totalPouille: 0,
+  partiesJouees: 0,
+  lastPartie: null  // {flo, pouille, mancheNum, partieNum} pour pouvoir annuler
+};
+
 let apiKey = '', binId = '';
 let saveTimeout = null;
 
@@ -219,58 +211,22 @@ let saveTimeout = null;
 function lsGet(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) {} }
 function pad(n, l) { return String(n).padStart(l, '0'); }
-function mancheNum() { return manches[mancheIdx].num; }
-function currentPartie() { return manches[mancheIdx].current; } // 5..1
-function partieIdx() { return N - currentPartie(); } // 0..4
-function mancheCode(m, p) { return pad(m, 3) + '-' + p; }
+function partieCode() { return pad(state.mancheNum, 3) + '-' + state.partieNum; }
+function manchesJouees() { return Math.floor(state.partiesJouees / 5); }
 
-// Calcule le cumul de la manche en cours
-function cumulManche() {
-  let f = 0, p = 0;
-  const m = manches[mancheIdx];
-  m.parties.forEach(pt => { f += pt.flo || 0; p += pt.pouille || 0; });
-  return { f, p };
-}
-
-// Calcule le cumul général (toutes manches)
-function cumulTotal() {
-  let f = 0, p = 0;
-  manches.forEach(m => m.parties.forEach(pt => { f += pt.flo || 0; p += pt.pouille || 0; }));
-  return { f, p };
-}
-
-function mancheIsDone() {
-  const m = manches[mancheIdx];
-  return m.parties.every(pt => pt.flo !== null && pt.pouille !== null);
-}
-
-// Génère les dealers alternés pour une manche, premier dealer basé sur manche impaire/paire
-function genDealers(mancheN) {
-  // Manche 1 : Pouille distribue la partie 5 (première)
-  // Manche 2 : Flo distribue la partie 5, etc.
-  const first = (mancheN % 2 === 1) ? 'pouille' : 'flo';
-  const other = first === 'pouille' ? 'flo' : 'pouille';
-  return [first, other, first, other, first]; // index 0=partie5, 4=partie1
-}
-
-function newMancheObj(num) {
-  const dealers = genDealers(num);
-  return {
-    num,
-    current: N, // commence à la partie 5
-    done: false,
-    parties: Array(N).fill(null).map((_, i) => ({ flo: null, pouille: null, dealer: dealers[i] }))
-  };
-}
-
-function initData() {
-  manches = [newMancheObj(1)];
-  mancheIdx = 0;
+// Dealer : manche impaire → Pouille distribue partie 5 en premier
+// À chaque partie le dealer alterne
+// partie 5→1 dans une manche : index 0=partie5 .. 4=partie1
+// premier dealer de la manche = (mancheNum impair) ? pouille : flo
+function getDealer(mancheN, partieN) {
+  const firstIsPouille = (mancheN % 2 === 1);
+  const idx = 5 - partieN; // partie5=idx0, partie1=idx4
+  return (idx % 2 === 0) ? (firstIsPouille ? 'pouille' : 'flo') : (firstIsPouille ? 'flo' : 'pouille');
 }
 
 // ── JSONBin ──────────────────────────────────────────────────
-function setStatus(state, text) {
-  document.getElementById('statusDot').className = 'status-dot ' + state;
+function setStatus(st, text) {
+  document.getElementById('statusDot').className = 'status-dot ' + st;
   document.getElementById('statusText').textContent = text;
 }
 
@@ -285,9 +241,7 @@ async function createBin(data) {
 }
 
 async function readBin() {
-  const r = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
-    headers: { 'X-Master-Key': apiKey }
-  });
+  const r = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', { headers: { 'X-Master-Key': apiKey } });
   if (!r.ok) throw new Error('Lecture échouée (' + r.status + ')');
   return (await r.json()).record;
 }
@@ -312,27 +266,20 @@ async function setupStorage() {
   setStatus('loading', 'Connexion en cours…');
   try {
     if (!binId) {
-      initData();
-      const payload = { manches, mancheIdx, v: 2 };
-      binId = await createBin(payload);
+      binId = await createBin({ state, v: 3 });
       lsSet('rami_binid', binId);
       setStatus('ok', 'Fichier créé ✓  ID : ' + binId);
       alert('Ton Bin ID est : ' + binId + '\n\nNote-le pour retrouver tes scores !');
     } else {
       lsSet('rami_binid', binId);
       const d = await readBin();
-      if (d.v === 2 && d.manches) {
-        manches = d.manches;
-        mancheIdx = d.mancheIdx || 0;
-      } else {
-        // Migration depuis ancienne version
-        initData();
+      if (d.v === 3 && d.state) {
+        state = d.state;
       }
       setStatus('ok', 'Scores chargés ✓');
     }
   } catch(e) {
     setStatus('error', e.message);
-    initData();
   }
   render();
 }
@@ -358,7 +305,7 @@ function scheduleSave() {
   setStatus('loading', 'Sauvegarde…');
   saveTimeout = setTimeout(async () => {
     try {
-      await writeBin({ manches, mancheIdx, v: 2, updatedAt: new Date().toISOString() });
+      await writeBin({ state, v: 3, updatedAt: new Date().toISOString() });
       setStatus('ok', 'Sauvegardé ✓');
     } catch(e) { setStatus('error', 'Erreur : ' + e.message); }
   }, 900);
@@ -366,96 +313,82 @@ function scheduleSave() {
 
 // ── Rendu ────────────────────────────────────────────────────
 function render() {
-  const m = manches[mancheIdx];
-  const cp = currentPartie();
-  const pi = partieIdx();
-  const done = mancheIsDone();
+  document.getElementById('partieCode').textContent = partieCode();
 
-  // Badge
-  document.getElementById('partieCode').textContent = mancheCode(m.num, cp);
-
-  // Dots (5 → 1, de gauche à droite)
+  // Dots — 5 ronds, ceux avant la partie en cours sont "done"
   const dotsEl = document.getElementById('dots');
   dotsEl.innerHTML = '';
-  for (let i = N; i >= 1; i--) {
-    const di = N - i;
+  for (let i = 5; i >= 1; i--) {
     const d = document.createElement('div');
-    const pt = m.parties[di];
-    if (pt.flo !== null && pt.pouille !== null) d.className = 'dot done';
-    else if (i === cp && !done) d.className = 'dot current';
+    if (i > state.partieNum) d.className = 'dot done';
+    else if (i === state.partieNum) d.className = 'dot current';
     else d.className = 'dot';
     dotsEl.appendChild(d);
   }
 
-  // Inputs
-  const pt = m.parties[pi];
-  document.getElementById('scoreFlo').value = pt.flo !== null ? pt.flo : '';
-  document.getElementById('scorePouille').value = pt.pouille !== null ? pt.pouille : '';
-  document.getElementById('scoreFlo').disabled = done;
-  document.getElementById('scorePouille').disabled = done;
+  // Inputs vides à chaque nouvelle partie
+  document.getElementById('scoreFlo').value = '';
+  document.getElementById('scorePouille').value = '';
 
-  // Totaux cumulés (toutes manches)
-  const tot = cumulTotal();
-  document.getElementById('totalFlo').textContent = tot.f;
-  document.getElementById('totalPouille').textContent = tot.p;
-  applyWinState(tot.f, tot.p, done);
+  // Totaux
+  document.getElementById('totalFlo').textContent = state.totalFlo;
+  document.getElementById('totalPouille').textContent = state.totalPouille;
+  applyWinState(state.totalFlo, state.totalPouille);
 
   // Dealer
-  document.getElementById('dealerBar').textContent = '🃏 À ' + (pt.dealer === 'flo' ? 'Flo' : 'Pouille') + ' de distribuer';
+  const dealer = getDealer(state.mancheNum, state.partieNum);
+  document.getElementById('dealerBar').textContent = '🃏 À ' + (dealer === 'flo' ? 'Flo' : 'Pouille') + ' de distribuer';
 
-  // Boutons
-  document.getElementById('btnPrev').disabled = cp === N;
-  document.getElementById('actionsNormal').classList.toggle('hidden', done);
-  document.getElementById('actionsNewManche').classList.toggle('hidden', !done);
+  // Bouton corriger : actif seulement si une partie a déjà été jouée
+  document.getElementById('btnPrev').disabled = state.lastPartie === null;
 
-  renderHistory();
+  // Résumé
+  const nb = state.partiesJouees;
+  document.getElementById('nbParties').textContent = nb;
+  document.getElementById('nbManches').textContent = manchesJouees();
+  document.getElementById('resumeFlo').textContent = state.totalFlo;
+  document.getElementById('resumePouille').textContent = state.totalPouille;
+  const diff = Math.abs(state.totalFlo - state.totalPouille);
+  if (diff === 0) {
+    document.getElementById('resumeWin').textContent = 'Égalité';
+  } else {
+    const winner = state.totalFlo < state.totalPouille ? 'Flo' : 'Pouille';
+    document.getElementById('resumeWin').textContent = winner + ' +' + diff + ' pts';
+  }
 }
 
-function applyWinState(f, p, mancheDone) {
+function applyWinState(f, p) {
   const banner = document.getElementById('banner');
   const cardF = document.getElementById('cardFlo'), cardP = document.getElementById('cardPouille');
   const totF = document.getElementById('totalFlo'), totP = document.getElementById('totalPouille');
   cardF.className = 'player-card'; cardP.className = 'player-card';
   totF.className = 'player-total'; totP.className = 'player-total';
   banner.className = 'banner';
-
-  if (f === 0 && p === 0 && !mancheDone) {
+  if (f === 0 && p === 0) {
     banner.textContent = 'En attente des scores…';
   } else if (f === p) {
-    banner.textContent = mancheDone ? '🤝 Manche nulle — égalité !' : 'Égalité !';
-    if (mancheDone) banner.className = 'banner manche-done';
+    banner.textContent = 'Égalité au total !';
   } else if (f > p) {
-    // Flo plus de points → perd → Pouille gagne
-    const diff = f - p;
-    banner.textContent = mancheDone
-      ? '🏆 Manche ' + pad(manches[mancheIdx].num, 3) + ' : Pouille gagne (' + diff + " pts d'écart)"
-      : '👑 Pouille gagne — ' + diff + " pts d'avance";
-    banner.className = mancheDone ? 'banner manche-done' : 'banner winning';
+    banner.textContent = '👑 Pouille gagne — ' + (f - p) + " pts d'avance";
+    banner.className = 'banner winning';
     cardP.className = 'player-card winning'; totP.className = 'player-total winning';
     cardF.className = 'player-card losing'; totF.className = 'player-total losing';
   } else {
-    const diff = p - f;
-    banner.textContent = mancheDone
-      ? '🏆 Manche ' + pad(manches[mancheIdx].num, 3) + ' : Flo gagne (' + diff + " pts d'écart)"
-      : '👑 Flo gagne — ' + diff + " pts d'avance";
-    banner.className = mancheDone ? 'banner manche-done' : 'banner winning';
+    banner.textContent = '👑 Flo gagne — ' + (p - f) + " pts d'avance";
+    banner.className = 'banner winning';
     cardF.className = 'player-card winning'; totF.className = 'player-total winning';
     cardP.className = 'player-card losing'; totP.className = 'player-total losing';
   }
 }
 
 function updatePreview() {
-  if (mancheIsDone()) return;
-  const pi = partieIdx();
   const fv = parseInt(document.getElementById('scoreFlo').value);
   const pv = parseInt(document.getElementById('scorePouille').value);
-  const base = cumulTotal();
-  const m = manches[mancheIdx];
-  const newF = base.f - (m.parties[pi].flo || 0) + (isNaN(fv) ? 0 : fv);
-  const newP = base.p - (m.parties[pi].pouille || 0) + (isNaN(pv) ? 0 : pv);
-  document.getElementById('totalFlo').textContent = newF;
-  document.getElementById('totalPouille').textContent = newP;
-  applyWinState(newF, newP, false);
+  const previewF = state.totalFlo + (isNaN(fv) ? 0 : fv);
+  const previewP = state.totalPouille + (isNaN(pv) ? 0 : pv);
+  document.getElementById('totalFlo').textContent = previewF;
+  document.getElementById('totalPouille').textContent = previewP;
+  applyWinState(previewF, previewP);
 }
 
 // ── Actions ──────────────────────────────────────────────────
@@ -463,135 +396,69 @@ function validerPartie() {
   const f = parseInt(document.getElementById('scoreFlo').value);
   const p = parseInt(document.getElementById('scorePouille').value);
   if (isNaN(f) || isNaN(p)) { alert('Entrez les scores des 2 joueurs.'); return; }
-  const m = manches[mancheIdx];
-  m.parties[partieIdx()].flo = f;
-  m.parties[partieIdx()].pouille = p;
-  if (m.current > 1) m.current--;
-  // Marquer manche done si toutes les parties remplies
-  if (mancheIsDone()) m.done = true;
-  scheduleSave(); render();
-}
 
-function goPartie(dir) {
-  const m = manches[mancheIdx];
-  const next = m.current + dir;
-  if (next >= 1 && next <= N) { m.current = next; render(); }
-}
+  // Sauvegarder la partie pour pouvoir corriger
+  state.lastPartie = { flo: f, pouille: p, mancheNum: state.mancheNum, partieNum: state.partieNum };
 
-function nouvelleManche() {
-  manches[mancheIdx].done = true;
-  const newNum = manches[mancheIdx].num + 1;
-  manches.push(newMancheObj(newNum));
-  mancheIdx = manches.length - 1;
-  scheduleSave(); render();
-}
+  // Ajouter au total
+  state.totalFlo += f;
+  state.totalPouille += p;
+  state.partiesJouees++;
 
-function resetManche() {
-  if (!confirm('Réinitialiser la manche en cours ?')) return;
-  const num = manches[mancheIdx].num;
-  manches[mancheIdx] = newMancheObj(num);
-  scheduleSave(); render();
-}
-
-// ── Historique ───────────────────────────────────────────────
-function renderHistory() {
-  const tbody = document.getElementById('historyBody');
-  tbody.innerHTML = '';
-  let grandF = 0, grandP = 0, anyGlobal = false;
-
-  manches.forEach((m, mi) => {
-    let mancheF = 0, mancheP = 0, anyManche = false;
-
-    // Séparateur manche
-    const sep = document.createElement('tr');
-    sep.className = 'row-manche-sep';
-    const isCurrent = mi === mancheIdx;
-    sep.innerHTML = '<td colspan="3">Manche ' + pad(m.num, 3) + (isCurrent ? ' — en cours' : '') + '</td>';
-    tbody.appendChild(sep);
-
-    for (let i = N; i >= 1; i--) {
-      const di = N - i, pt = m.parties[di];
-      if (pt.flo !== null || pt.pouille !== null) {
-        anyManche = true; anyGlobal = true;
-        mancheF += pt.flo || 0; mancheP += pt.pouille || 0;
-        const code = mancheCode(m.num, i);
-        const dealerLabel = pt.dealer === 'flo' ? '🃏F' : '🃏P';
-        const isCur = (mi === mancheIdx && i === currentPartie() && !mancheIsDone());
-        const tr = document.createElement('tr');
-        tr.innerHTML = '<td><span style="font-variant-numeric:tabular-nums;font-weight:500">' + code + '</span>'
-          + (isCur ? ' ✏️' : '')
-          + '<br><span style="color:var(--text3);font-size:10px">' + dealerLabel + '</span></td>'
-          + '<td>' + (pt.flo !== null ? pt.flo : '—') + '</td>'
-          + '<td>' + (pt.pouille !== null ? pt.pouille : '—') + '</td>';
-        tbody.appendChild(tr);
-      }
-    }
-
-    if (anyManche) {
-      grandF += mancheF; grandP += mancheP;
-      const tr = document.createElement('tr');
-      tr.className = 'row-manche-total';
-      const mancheWinner = mancheF < mancheP ? '✓ Flo' : mancheF > mancheP ? '✓ Pouille' : '=';
-      tr.innerHTML = '<td>Σ manche ' + pad(m.num, 3) + '<br><small style="font-weight:400;color:var(--text3)">' + mancheWinner + '</small></td>'
-        + '<td>' + mancheF + '</td><td>' + mancheP + '</td>';
-      tbody.appendChild(tr);
-    }
-  });
-
-  if (anyGlobal) {
-    const tr = document.createElement('tr');
-    tr.className = 'row-grand-total';
-    const gWinner = grandF < grandP ? '👑 Flo' : grandF > grandP ? '👑 Pouille' : '=';
-    tr.innerHTML = '<td>TOTAL<br><small style="font-weight:400">' + gWinner + '</small></td>'
-      + '<td>' + grandF + '</td><td>' + grandP + '</td>';
-    tbody.appendChild(tr);
+  // Avancer à la partie suivante
+  if (state.partieNum > 1) {
+    state.partieNum--;
   } else {
-    const tr = document.createElement('tr');
-    tr.className = 'empty-row';
-    tr.innerHTML = '<td colspan="3">Aucune partie enregistrée</td>';
-    tbody.appendChild(tr);
+    // Fin de manche → manche suivante, partie 5
+    state.mancheNum++;
+    state.partieNum = 5;
   }
+
+  scheduleSave();
+  render();
+}
+
+function goBack() {
+  if (!state.lastPartie) return;
+  const lp = state.lastPartie;
+  // Annuler les points
+  state.totalFlo -= lp.flo;
+  state.totalPouille -= lp.pouille;
+  state.partiesJouees--;
+  // Revenir à la partie précédente
+  state.mancheNum = lp.mancheNum;
+  state.partieNum = lp.partieNum;
+  state.lastPartie = null;
+  scheduleSave();
+  render();
+  // Remettre les scores dans les inputs
+  document.getElementById('scoreFlo').value = lp.flo;
+  document.getElementById('scorePouille').value = lp.pouille;
+  updatePreview();
+}
+
+function resetAll() {
+  if (!confirm('Remettre tous les scores à zéro ?')) return;
+  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0, lastPartie: null };
+  scheduleSave();
+  render();
 }
 
 // ── Export TXT ───────────────────────────────────────────────
 function exportTxt() {
+  const d = new Date().toLocaleString('fr-FR');
+  const diff = Math.abs(state.totalFlo - state.totalPouille);
+  const winner = state.totalFlo < state.totalPouille ? 'Flo' : state.totalPouille < state.totalFlo ? 'Pouille' : null;
   let txt = '=== RAMI — Flo & Pouille ===\n';
-  txt += 'Exporté le : ' + new Date().toLocaleString('fr-FR') + '\n';
-  txt += '================================================\n\n';
-
-  let grandF = 0, grandP = 0;
-
-  manches.forEach(m => {
-    let mancheF = 0, mancheP = 0, hasData = false;
-    txt += '--- Manche ' + pad(m.num, 3) + ' ---\n';
-    txt += 'Partie\t\tDistributeur\tFlo\tPouille\n';
-    for (let i = N; i >= 1; i--) {
-      const di = N - i, pt = m.parties[di];
-      if (pt.flo !== null || pt.pouille !== null) {
-        hasData = true;
-        mancheF += pt.flo || 0; mancheP += pt.pouille || 0;
-        const d = pt.dealer === 'flo' ? 'Flo' : 'Pouille';
-        txt += mancheCode(m.num, i) + '\t\t' + d + '\t\t' + (pt.flo !== null ? pt.flo : '—') + '\t' + (pt.pouille !== null ? pt.pouille : '—') + '\n';
-      }
-    }
-    if (hasData) {
-      grandF += mancheF; grandP += mancheP;
-      txt += 'Σ manche\t\t\t' + mancheF + '\t' + mancheP;
-      if (mancheF < mancheP) txt += '\t→ Flo gagne';
-      else if (mancheP < mancheF) txt += '\t→ Pouille gagne';
-      else txt += '\t→ Égalité';
-      txt += '\n';
-    } else {
-      txt += '(aucune partie jouée)\n';
-    }
-    txt += '\n';
-  });
-
-  txt += '================================================\n';
-  txt += 'TOTAL GÉNÉRAL\t\t\t' + grandF + '\t' + grandP + '\n';
-  if (grandF < grandP) txt += 'Vainqueur global : Flo (' + (grandP - grandF) + " pts d'écart)\n";
-  else if (grandP < grandF) txt += 'Vainqueur global : Pouille (' + (grandF - grandP) + " pts d'écart)\n";
-  else txt += 'Résultat global : Égalité !\n';
+  txt += 'Exporté le : ' + d + '\n';
+  txt += '================================\n\n';
+  txt += 'Parties jouées  : ' + state.partiesJouees + '\n';
+  txt += 'Manches jouées  : ' + manchesJouees() + '\n';
+  txt += 'Partie en cours : ' + partieCode() + '\n\n';
+  txt += 'Total Flo       : ' + state.totalFlo + '\n';
+  txt += 'Total Pouille   : ' + state.totalPouille + '\n\n';
+  if (winner) txt += 'Avance : ' + winner + ' gagne de ' + diff + ' pts\n';
+  else txt += 'Résultat : Égalité !\n';
   txt += '\nBin ID : ' + binId;
 
   const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
