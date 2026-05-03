@@ -158,7 +158,7 @@
       <div class="rami-sec" id="ramiSecFlo">0 rami sec</div>
       <div class="player-total" id="totalFlo">0</div>
       <div class="score-label">Total</div>
-      <input class="score-input" type="number" id="scoreFlo" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
+      <input class="score-input" type="number" id="scoreFlo" inputmode="decimal" placeholder="—" oninput="autoFill('flo')">
     </div>
     <div class="player-card" id="cardPouille">
       <div class="avatar pouille">P</div>
@@ -166,7 +166,7 @@
       <div class="rami-sec" id="ramiSecPouille">0 rami sec</div>
       <div class="player-total" id="totalPouille">0</div>
       <div class="score-label">Total</div>
-      <input class="score-input" type="number" id="scorePouille" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
+      <input class="score-input" type="number" id="scorePouille" inputmode="decimal" placeholder="—" oninput="autoFill('pouille')">
     </div>
   </div>
 
@@ -365,6 +365,23 @@ function applyWinState(f, p) {
   }
 }
 
+function autoFill(who) {
+  const inputFlo = document.getElementById('scoreFlo');
+  const inputPouille = document.getElementById('scorePouille');
+  if (who === 'flo') {
+    const v = inputFlo.value.trim();
+    // Si rami sec (0), l'autre reste vide pour saisie manuelle si besoin
+    // Sinon auto-0 l'autre
+    if (v !== '' && v !== '-') inputPouille.value = 0;
+    else if (v === '') inputPouille.value = '';
+  } else {
+    const v = inputPouille.value.trim();
+    if (v !== '' && v !== '-') inputFlo.value = 0;
+    else if (v === '') inputFlo.value = '';
+  }
+  updatePreview();
+}
+
 function updatePreview() {
   const fv = parseInt(document.getElementById('scoreFlo').value);
   const pv = parseInt(document.getElementById('scorePouille').value);
@@ -379,11 +396,16 @@ function updatePreview() {
 function validerPartie() {
   const f = parseInt(document.getElementById('scoreFlo').value);
   const p = parseInt(document.getElementById('scorePouille').value);
-  if (isNaN(f) || isNaN(p)) { alert('Entrez les scores des 2 joueurs.'); return; }
+  if (isNaN(f) && isNaN(p)) { alert('Entrez le score du joueur qui a des points.'); return; }
+  if (isNaN(f)) f = 0;
+  if (isNaN(p)) p = 0;
 
-  // Rami sec : celui qui marque 0 l'a fait
-  if (f === 0) state.ramiSecFlo++;
-  if (p === 0) state.ramiSecPouille++;
+  // Rami sec : celui qui marque 0 l'a fait (et l'autre > 0)
+  if (!state.ramiSecFlo) state.ramiSecFlo = 0;
+  if (!state.ramiSecPouille) state.ramiSecPouille = 0;
+  if (f === 0 && p > 0) state.ramiSecFlo++;
+  if (p === 0 && f > 0) state.ramiSecPouille++;
+  // Note : un score négatif n'est jamais un rami sec (correction de saisie)
 
   // Ajouter au total
   state.totalFlo += f;
