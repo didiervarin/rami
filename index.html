@@ -88,6 +88,8 @@
   .avatar.flo { background: var(--flo-bg); color: var(--flo-text); }
   .avatar.pouille { background: var(--pouille-bg); color: var(--pouille-text); }
   .player-name { font-size: 17px; font-weight: 600; color: var(--text); }
+  .rami-sec { font-size: 12px; color: var(--text3); margin-bottom: 2px; font-weight: 500; }
+  .rami-sec.has-rami { color: var(--green); font-weight: 700; }
   .player-total { font-size: 32px; font-weight: 700; letter-spacing: -1px; color: var(--text); margin: 6px 0; transition: color 0.25s; }
   .player-total.winning { color: var(--green); }
   .player-total.losing { color: var(--red); }
@@ -153,6 +155,7 @@
     <div class="player-card" id="cardFlo">
       <div class="avatar flo">F</div>
       <div class="player-name">Flo</div>
+      <div class="rami-sec" id="ramiSecFlo">0 rami sec</div>
       <div class="player-total" id="totalFlo">0</div>
       <div class="score-label">Total</div>
       <input class="score-input" type="number" id="scoreFlo" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
@@ -160,6 +163,7 @@
     <div class="player-card" id="cardPouille">
       <div class="avatar pouille">P</div>
       <div class="player-name">Pouille</div>
+      <div class="rami-sec" id="ramiSecPouille">0 rami sec</div>
       <div class="player-total" id="totalPouille">0</div>
       <div class="score-label">Total</div>
       <input class="score-input" type="number" id="scorePouille" inputmode="numeric" placeholder="—" min="0" oninput="updatePreview()">
@@ -320,6 +324,16 @@ function render() {
   document.getElementById('totalPouille').textContent = state.totalPouille;
   applyWinState(state.totalFlo, state.totalPouille);
 
+  // Rami sec
+  const rsF = state.ramiSecFlo || 0;
+  const rsP = state.ramiSecPouille || 0;
+  const elRsF = document.getElementById('ramiSecFlo');
+  const elRsP = document.getElementById('ramiSecPouille');
+  elRsF.textContent = rsF + (rsF > 1 ? ' ramis secs' : ' rami sec');
+  elRsF.className = 'rami-sec' + (rsF > 0 ? ' has-rami' : '');
+  elRsP.textContent = rsP + (rsP > 1 ? ' ramis secs' : ' rami sec');
+  elRsP.className = 'rami-sec' + (rsP > 0 ? ' has-rami' : '');
+
   // Dealer
   const dealer = getDealer(state.mancheNum, state.partieNum);
   document.getElementById('dealerBar').textContent = '🃏 À ' + (dealer === 'flo' ? 'Flo' : 'Pouille') + ' de distribuer';
@@ -367,6 +381,10 @@ function validerPartie() {
   const p = parseInt(document.getElementById('scorePouille').value);
   if (isNaN(f) || isNaN(p)) { alert('Entrez les scores des 2 joueurs.'); return; }
 
+  // Rami sec : celui qui marque 0 l'a fait
+  if (f === 0) state.ramiSecFlo++;
+  if (p === 0) state.ramiSecPouille++;
+
   // Ajouter au total
   state.totalFlo += f;
   state.totalPouille += p;
@@ -387,7 +405,7 @@ function validerPartie() {
 
 function resetAll() {
   if (!confirm('Remettre tous les scores à zéro ?')) return;
-  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0 };
+  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0, ramiSecFlo: 0, ramiSecPouille: 0 };
   scheduleSave();
   render();
 }
@@ -404,7 +422,9 @@ function exportTxt() {
   txt += 'Manches jouées  : ' + manchesJouees() + '\n';
   txt += 'Partie en cours : ' + partieCode() + '\n\n';
   txt += 'Total Flo       : ' + state.totalFlo + '\n';
-  txt += 'Total Pouille   : ' + state.totalPouille + '\n\n';
+  txt += 'Total Pouille   : ' + state.totalPouille + '\n';
+  txt += 'Rami sec Flo    : ' + (state.ramiSecFlo || 0) + '\n';
+  txt += 'Rami sec Pouille: ' + (state.ramiSecPouille || 0) + '\n\n';
   if (winner) txt += 'Avance : ' + winner + ' gagne de ' + diff + ' pts\n';
   else txt += 'Résultat : Égalité !\n';
   txt += '\nBin ID : ' + binId;
@@ -419,7 +439,7 @@ function exportTxt() {
 // ── Init ─────────────────────────────────────────────────────
 function resetAllFromSetup() {
   if (!confirm('Remettre tous les scores à zéro ?')) return;
-  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0 };
+  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0, ramiSecFlo: 0, ramiSecPouille: 0 };
   scheduleSave();
 }
 
