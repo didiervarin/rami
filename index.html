@@ -104,12 +104,7 @@
   .btn.danger { border-color: var(--red-border); color: var(--red); font-size: 13px; grid-column: 1 / -1; }
 
   /* Total card */
-  .total-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
-  .total-card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; text-align: center; }
-  .total-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text2); padding: 3px 0; }
-  .total-row .val { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
-  .total-row.highlight .val { color: var(--green); }
-  .export-btn { width: 100%; margin-top: 12px; border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px; font-size: 13px; background: none; color: var(--text2); cursor: pointer; font-family: inherit; }
+
   .hidden { display: none !important; }
 </style>
 </head>
@@ -124,6 +119,8 @@
     <input class="setup-input" type="text" id="apiKeyInput" placeholder="Master Key JSONBin ($2b$10$...)" autocomplete="off" autocorrect="off" spellcheck="false">
     <input class="setup-input" type="text" id="binIdInput" placeholder="Bin ID (laisser vide = nouveau fichier)" autocomplete="off" autocorrect="off" spellcheck="false">
     <button class="setup-btn" onclick="setupStorage()">Démarrer →</button>
+    <button class="setup-btn" style="background:none;color:var(--red);border:1px solid var(--red-border);margin-top:-4px" onclick="resetAllFromSetup()">🗑 Tout réinitialiser</button>
+    <button class="setup-btn" style="background:none;color:var(--text2);border:1px solid var(--border2);margin-top:-4px" onclick="exportFromSetup()">Exporter .txt</button>
     <div class="setup-link">
       1. Va sur <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → crée un compte gratuit<br>
       2. Tableau de bord → <strong>API Keys</strong> → copie la <strong>Master Key</strong><br>
@@ -170,20 +167,10 @@
   </div>
 
   <div class="actions">
-    <button class="btn" id="btnPrev" onclick="goBack()">← Corriger</button>
-    <button class="btn primary" onclick="validerPartie()">Valider ✓</button>
-    <button class="btn danger" onclick="resetAll()">Tout réinitialiser</button>
+    <button class="btn primary" style="grid-column:1/-1" onclick="validerPartie()">Valider ✓</button>
   </div>
 
-  <div class="total-card">
-    <div class="total-card-title">Résumé</div>
-    <div class="total-row"><span>Parties jouées</span><span class="val" id="nbParties">0</span></div>
-    <div class="total-row"><span>Manches jouées</span><span class="val" id="nbManches">0</span></div>
-    <div class="total-row"><span>Total Flo</span><span class="val" id="resumeFlo">0</span></div>
-    <div class="total-row"><span>Total Pouille</span><span class="val" id="resumePouille">0</span></div>
-    <div class="total-row" id="resumeWinRow"><span>Avance</span><span class="val" id="resumeWin">—</span></div>
-    <button class="export-btn" onclick="exportTxt()">Exporter .txt</button>
-  </div>
+
 </div>
 
 <script>
@@ -193,7 +180,6 @@
 // totalFlo   : cumul total Flo (toutes parties validées)
 // totalPouille: cumul total Pouille
 // partiesJouees : nombre total de parties validées
-// lastPartie : {flo, pouille} — la dernière partie validée (pour "Corriger")
 
 let state = {
   mancheNum: 1,
@@ -201,7 +187,6 @@ let state = {
   totalFlo: 0,
   totalPouille: 0,
   partiesJouees: 0,
-  lastPartie: null  // {flo, pouille, mancheNum, partieNum} pour pouvoir annuler
 };
 
 let apiKey = '', binId = '';
@@ -339,22 +324,7 @@ function render() {
   const dealer = getDealer(state.mancheNum, state.partieNum);
   document.getElementById('dealerBar').textContent = '🃏 À ' + (dealer === 'flo' ? 'Flo' : 'Pouille') + ' de distribuer';
 
-  // Bouton corriger : actif seulement si une partie a déjà été jouée
-  document.getElementById('btnPrev').disabled = state.lastPartie === null;
 
-  // Résumé
-  const nb = state.partiesJouees;
-  document.getElementById('nbParties').textContent = nb;
-  document.getElementById('nbManches').textContent = manchesJouees();
-  document.getElementById('resumeFlo').textContent = state.totalFlo;
-  document.getElementById('resumePouille').textContent = state.totalPouille;
-  const diff = Math.abs(state.totalFlo - state.totalPouille);
-  if (diff === 0) {
-    document.getElementById('resumeWin').textContent = 'Égalité';
-  } else {
-    const winner = state.totalFlo < state.totalPouille ? 'Flo' : 'Pouille';
-    document.getElementById('resumeWin').textContent = winner + ' +' + diff + ' pts';
-  }
 }
 
 function applyWinState(f, p) {
@@ -397,9 +367,6 @@ function validerPartie() {
   const p = parseInt(document.getElementById('scorePouille').value);
   if (isNaN(f) || isNaN(p)) { alert('Entrez les scores des 2 joueurs.'); return; }
 
-  // Sauvegarder la partie pour pouvoir corriger
-  state.lastPartie = { flo: f, pouille: p, mancheNum: state.mancheNum, partieNum: state.partieNum };
-
   // Ajouter au total
   state.totalFlo += f;
   state.totalPouille += p;
@@ -418,28 +385,9 @@ function validerPartie() {
   render();
 }
 
-function goBack() {
-  if (!state.lastPartie) return;
-  const lp = state.lastPartie;
-  // Annuler les points
-  state.totalFlo -= lp.flo;
-  state.totalPouille -= lp.pouille;
-  state.partiesJouees--;
-  // Revenir à la partie précédente
-  state.mancheNum = lp.mancheNum;
-  state.partieNum = lp.partieNum;
-  state.lastPartie = null;
-  scheduleSave();
-  render();
-  // Remettre les scores dans les inputs
-  document.getElementById('scoreFlo').value = lp.flo;
-  document.getElementById('scorePouille').value = lp.pouille;
-  updatePreview();
-}
-
 function resetAll() {
   if (!confirm('Remettre tous les scores à zéro ?')) return;
-  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0, lastPartie: null };
+  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0 };
   scheduleSave();
   render();
 }
@@ -469,6 +417,16 @@ function exportTxt() {
 }
 
 // ── Init ─────────────────────────────────────────────────────
+function resetAllFromSetup() {
+  if (!confirm('Remettre tous les scores à zéro ?')) return;
+  state = { mancheNum: 1, partieNum: 5, totalFlo: 0, totalPouille: 0, partiesJouees: 0 };
+  scheduleSave();
+}
+
+function exportFromSetup() {
+  exportTxt();
+}
+
 tryAutoLoad();
 </script>
 </body>
