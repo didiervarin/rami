@@ -395,8 +395,8 @@ function updatePreview() {
 
 // ── Actions ──────────────────────────────────────────────────
 function validerPartie() {
-  const f = parseInt(document.getElementById('scoreFlo').value);
-  const p = parseInt(document.getElementById('scorePouille').value);
+  let f = parseInt(document.getElementById('scoreFlo').value);
+  let p = parseInt(document.getElementById('scorePouille').value);
   if (isNaN(f) && isNaN(p)) { alert('Entrez le score du joueur qui a des points.'); return; }
   if (isNaN(f)) f = 0;
   if (isNaN(p)) p = 0;
@@ -404,9 +404,8 @@ function validerPartie() {
   // Rami sec : celui qui marque 0 l'a fait (et l'autre > 0)
   if (!state.ramiSecFlo) state.ramiSecFlo = 0;
   if (!state.ramiSecPouille) state.ramiSecPouille = 0;
-  if (f === 0 && p > 0) state.ramiSecFlo++;
-  if (p === 0 && f > 0) state.ramiSecPouille++;
-  // Note : un score négatif n'est jamais un rami sec (correction de saisie)
+  if (p === 200) state.ramiSecFlo++;   // Pouille a 200 → Flo a fait rami sec
+  if (f === 200) state.ramiSecPouille++; // Flo a 200 → Pouille a fait rami sec
 
   // Ajouter au total
   state.totalFlo += f;
