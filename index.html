@@ -231,9 +231,21 @@ async function createBin(data) {
 }
 
 async function readBin() {
-  const r = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', { headers: { 'X-Master-Key': apiKey } });
-  if (!r.ok) throw new Error('Lecture échouée (' + r.status + ')');
-  return (await r.json()).record;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const r = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
+      headers: { 'X-Master-Key': apiKey },
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (!r.ok) throw new Error('Lecture échouée (' + r.status + ')');
+    return (await r.json()).record;
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') throw new Error('Délai dépassé — vérifie ta connexion');
+    throw e;
+  }
 }
 
 async function writeBin(data) {
@@ -469,7 +481,7 @@ function exportFromSetup() {
   exportTxt();
 }
 
-tryAutoLoad();
+document.addEventListener('DOMContentLoaded', tryAutoLoad);
 </script>
 </body>
 </html>
